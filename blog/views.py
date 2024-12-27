@@ -5,6 +5,8 @@ from django.contrib import messages
 # import sweetify
 from django.core.paginator import Paginator
 from django.db.models import Q 
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
 
 
 def tag_posts(request, tag_name):
@@ -59,8 +61,42 @@ def post_create(request):
         form = PostForm()
     return render(request, 'posts/post_form.html', {'form': form})
 
+# def post_update(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES, instance=post)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Post updated successfully!')
+#             return redirect('post-detail', pk=post.pk)
+#         else:
+#             messages.error(request, 'There was an error updating the post.')
+#     else:
+#         form = PostForm(instance=post)
+#     return render(request, 'posts/post_form.html', {'form': form})
+
+
+# def post_delete(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     if request.method == 'POST':
+#         post.delete()
+#         messages.success(request, 'Post deleted successfully!')
+#         return redirect('post-list')
+#     else:
+#         messages.error(request, 'There was an error deleting the post.')
+#     return render(request, 'posts/post_confirm_delete.html', {'post': post})
+
+
+@login_required
 def post_update(request, pk):
     post = get_object_or_404(Post, pk=pk)
+    
+    # Ensure the logged-in user is the owner of the post
+    if post.author != request.user:
+        messages.error(request, 'You do not have permission to update this post.')
+        return redirect('post-detail', pk=post.pk)
+
+
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
@@ -71,18 +107,25 @@ def post_update(request, pk):
             messages.error(request, 'There was an error updating the post.')
     else:
         form = PostForm(instance=post)
+    
     return render(request, 'posts/post_form.html', {'form': form})
 
 
+@login_required
 def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk)
+
+    # Ensure the logged-in user is the owner of the post
+    if post.author != request.user:
+        messages.error(request, 'You do not have permission to delete this post.')
+        return redirect('post-list')
+
     if request.method == 'POST':
         post.delete()
         messages.success(request, 'Post deleted successfully!')
         return redirect('post-list')
     else:
-        messages.error(request, 'There was an error deleting the post.')
-    return render(request, 'posts/post_confirm_delete.html', {'post': post})
+        return render(request, 'posts/post_confirm_delete.html', {'post': post})
 
 
 def category_posts(request, pk):
