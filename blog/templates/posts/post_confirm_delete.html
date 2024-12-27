@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Delete - My Website{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-4">Delete Post</h1>
+        <p class="text-lg mb-4">Are you sure you want to delete "<strong>{{ post.title }}</strong>"?</p>
+
+        <form method="post" class="mb-4">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                Confirm Delete
+            </button>
+            <a href="{% url 'post-list' %}" class="ml-4 text-blue-500 hover:underline">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+    
+

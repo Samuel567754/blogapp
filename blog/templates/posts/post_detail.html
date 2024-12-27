@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Post Details - My Website{% endblock %}
+
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+   <div class="space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg transition-transform transform">
+                    <div class="mb-4">
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="{{ post.title }} Image" class="w-full h-auto rounded-lg mb-4">
+                        {% endif %}
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-3 hover:text-blue-600 transition-colors duration-200">{{ post.title }}</h2>
+                    <p class="text-gray-600 mb-4">{{ post.content|truncatewords:30 }}</p>
+                    <p class="text-gray-400 text-sm mb-2">Published on {{ post.date_posted|date:"F j, Y" }}</p>
+                    <p class="text-gray-400 text-sm mb-2">Created by {{ post.author.username }}</p>
+                    
+                    <div class="mb-4">
+                        <span class="text-gray-500 font-semibold">Categories:</span>
+                        {% for category in post.categories.all %}
+                        <a href="{% url 'category-posts' category.pk %}" class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                            {{ category.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+    
+                    <div class="mb-4">
+                        <span class="text-gray-500 font-semibold">Tags:</span>
+                        {% for tag in post.tags.all %}
+                        <a href="{% url 'tag-posts' tag.name %}" class="inline-block bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+                            {{ tag.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+    
+                    <div class="flex space-x-4">
+                        <a href="{% url 'post-update' post.pk %}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out">
+                            Edit
+                        </a>
+                        <a href="{% url 'post-delete' post.pk %}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out">
+                            Delete
+                        </a>
+                    </div>
+
+                    <div class="mt-6">
+                        <a href="{% url 'post-list' %}" class="text-blue-500 hover:underline">
+                            Back to Post List
+                        </a>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+    
+
+
