@@ -12,30 +12,40 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
+# Ensure BASE_DIR is a Path object
+BASE_DIR = Path(__file__).resolve().parent.parent  # ✅ Correct definition
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+STATIC_URL = '/static/'
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6&9(mqw9eikncc%x-@+(y1_$&-$-c9oo4w9%y7n6qx%rg7#cq6'
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development
+# Define STATIC_ROOT globally
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # ✅ Use Path object
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if not DEBUG:
+    # Enable WhiteNoise for production
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',  # ✅ Use Path object
+]
+
+# COMPRESS_ROOT should reference STATIC_ROOT safely
+COMPRESS_ROOT = STATIC_ROOT
+
+# Quick-start development settings - unsuitable for production
+SECRET_KEY = 'django-insecure-6&9(mqw9eikncc%x-@+(y1_$&-$-c9oo4w9%y7n6qx%rg7#cq6'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development
+
 ALLOWED_HOSTS = []
 
 MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Application definition
+MEDIA_ROOT = BASE_DIR / 'media'  # ✅ Use Path object
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -45,7 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-     'compressor',
+    'compressor',
     'crispy_forms',
     'crispy_tailwind',
     'blog',
@@ -53,32 +63,18 @@ INSTALLED_APPS = [
     'sweetify',
 ]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-STATIC_URL = '/static/'  # Make sure this starts with a slash
-
-# Directory where collectstatic will collect static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Additional locations of static files
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Your app's static files directory
-]
-
-
 # Compression settings
 COMPRESS_ENABLED = True
 COMPRESS_ROOT = STATIC_ROOT
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',  # Add this line
+    'compressor.finders.CompressorFinder',
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,7 +88,7 @@ ROOT_URLCONF = 'mydjangoapp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],  # ✅ Works correctly with Path object
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,8 +104,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mydjangoapp.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+# Replace the SQLite DATABASES configuration with PostgreSQL:
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://postgres:postgres@localhost:5432/mysite',
+        conn_max_age=600
+    )
+}
+
 
 DATABASES = {
     'default': {

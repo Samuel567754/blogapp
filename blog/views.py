@@ -86,8 +86,6 @@ def post_create(request):
 #         messages.error(request, 'There was an error deleting the post.')
 #     return render(request, 'posts/post_confirm_delete.html', {'post': post})
 
-
-@login_required
 def post_update(request, pk):
     post = get_object_or_404(Post, pk=pk)
     
@@ -111,7 +109,6 @@ def post_update(request, pk):
     return render(request, 'posts/post_form.html', {'form': form})
 
 
-@login_required
 def post_delete(request, pk):
     post = get_object_or_404(Post, pk=pk)
 
