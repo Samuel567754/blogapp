@@ -42,7 +42,7 @@ SECRET_KEY = 'django-insecure-6&9(mqw9eikncc%x-@+(y1_$&-$-c9oo4w9%y7n6qx%rg7#cq6
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During development
 
-ALLOWED_HOSTS = ['https://mydjangoapp-nk6z.onrender.com']
+ALLOWED_HOSTS = ['mydjangoapp-nk6z.onrender.com', '127.0.0.1', 'localhost']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # ✅ Use Path object
