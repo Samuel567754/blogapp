@@ -22,15 +22,15 @@
 #         value: 4
 
 
-services:
-  - type: web
-    plan: free
-    name: mydjangoapp
-    runtime: python
-    buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn mydjangoapp.asgi:application -k uvicorn.workers.UvicornWorker"
-    envVars:
-      - key: SECRET_KEY
-        generateValue: true
-      - key: WEB_CONCURRENCY
-        value: 4
+# services:
+#   - type: web
+#     plan: free
+#     name: mydjangoapp
+#     runtime: python
+#     buildCommand: "./build.sh"
+#     startCommand: "python -m gunicorn mydjangoapp.asgi:application -k uvicorn.workers.UvicornWorker"
+#     envVars:
+#       - key: SECRET_KEY
+#         generateValue: true
+#       - key: WEB_CONCURRENCY
+#         value: 4
