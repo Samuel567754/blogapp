@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+    command: gunicorn mydjangoapp.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DEBUG=1
+      - ENV=dev
+    depends_on:
+      - tailwind
+
+  tailwind:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npm run dev  # watches tailwind in dev
+
+volumes:
+  staticfiles:
+  media:
+
+
+
+
+
+# version: '3.8'
+# services:
+#   db:
+#     image: postgres:15
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     env_file:
+#       - .env
+
+#   web:
+#     build:
+#       context: .
+#     command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
+#     volumes:
+#       - .:/app                      # your code
+#       - ./staticfiles:/app/staticfiles  # persists collectstatic
+#       - ./media:/app/media         # persists uploaded files when using local MEDIA_ROOT
+#     ports:
+#       - "8000:8000"
+#     env_file:
+#       - .env
+#     environment:
+#       - DEBUG=${DEBUG}
+#       - SECRET_KEY=${SECRET_KEY}
+#       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+#       - DATABASE_URL=${DATABASE_URL}
+#       - B2_APPLICATION_KEY_ID=${B2_APPLICATION_KEY_ID}
+#       - B2_APPLICATION_KEY=${B2_APPLICATION_KEY}
+#       - B2_BUCKET_NAME=${B2_BUCKET_NAME}
+#       - B2_REGION_NAME=${B2_REGION_NAME}
+#     depends_on:
+#       - db
+
+# volumes:
+#   postgres_data:
+#   staticfiles:
+#   media:
